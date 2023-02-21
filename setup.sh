@@ -108,7 +108,6 @@ function install_s1() {
 
 function install_s2 {
     update_network_configuration "$1"
-#    service networking restart
     apt install -y proxmox-ve postfix open-iscsi nginx
     apt remove linux-image-amd64 'linux-image-5.10*' -y
     update-grub
@@ -120,7 +119,7 @@ function install_s2 {
         echo ""
         echo "server {"
         echo "  listen [::]:80 default_server;"
-        echo "  rewrite ^(.*) https://\$host$1 permanent;"
+        echo "  rewrite ^(.*) https://\$host permanent;"
         echo "}"
         echo ""
         echo "server {"
@@ -160,7 +159,7 @@ function restart_server() {
 }
 
 function install() {
-#    clear
+    clear
     if [ -f "/root/.setup/installation_step_2" ]; then
         echo "You have already completed the installation!"
         exit
@@ -170,7 +169,7 @@ function install() {
         read -r -p "Domain: " domain
         mkdir -p /root/.setup/ ; touch /root/.setup/installation_step_2
         install_s2 "$domain"
-#        clear
+        clear
         echo "The installation was completed, some changes were made to the system. You are no longer able to log in via IPv4."
         echo ""
         echo ""
@@ -194,7 +193,7 @@ function install() {
     else
         mkdir -p /root/.setup/ ; touch /root/.setup/installation_step_1
         install_s1
-#        clear
+        clear
         echo "The server must be restarted, run this tool again after the restart."
         echo ""
         restart_server 10
@@ -206,7 +205,7 @@ function main() {
         then echo "Please run this tool as root user!"
         exit
     fi
-#    clear
+    clear
     echo "Select a number to perform the described action!"
     echo ">   1 - Start the installation and setup of services"
     echo ">   2 - Generate a random IPv6 address"
@@ -215,7 +214,7 @@ function main() {
     if [ "$option" == "1" ]; then
         install
     elif [ "$option" == "2" ]; then
-#        clear
+        clear
         echo "Generated IPv6 address: $(generate_ipv6_address)"
     fi
 }
